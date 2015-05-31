@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  makes: MyText
+  makesCount: MyString
+  integer: MyString
+
+two:
+  makes: MyText
+  makesCount: MyString
+  integer: MyString

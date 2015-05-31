@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  averageRating: 1.5
+  links: 
+  reviews: 
+  reviewsCount: 1
+
+two:
+  averageRating: 1.5
+  links: 
+  reviews: 
+  reviewsCount: 1

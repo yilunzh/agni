@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  modelyear_id: 1
+  edmunds_style_id: 1
+  name: MyString
+  submodel: 
+  trim: MyString
+
+two:
+  modelyear_id: 1
+  edmunds_style_id: 1
+  name: MyString
+  submodel: 
+  trim: MyString
