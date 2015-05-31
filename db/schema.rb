@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150530205613) do
+ActiveRecord::Schema.define(version: 20150531032058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,25 @@ ActiveRecord::Schema.define(version: 20150530205613) do
     t.integer  "style_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+  end
+
+  create_table "editorial_reviews", force: :cascade do |t|
+    t.string   "tags",                      array: true
+    t.string   "description"
+    t.string   "introduction"
+    t.json     "link"
+    t.string   "edmundsSays"
+    t.string   "pros",                      array: true
+    t.string   "cons",                      array: true
+    t.string   "whatsNew"
+    t.string   "body"
+    t.string   "powertrain"
+    t.string   "safety"
+    t.string   "interior"
+    t.string   "driving"
+    t.integer  "modelyear_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "makes", force: :cascade do |t|

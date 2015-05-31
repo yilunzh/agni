@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tags: MyString
+  description: MyString
+  introduction: MyString
+  link: 
+  edmundsSays: MyString
+  pros: MyString
+  cons: MyString
+  whatsNew: MyString
+  body: MyString
+  powertrain: MyString
+  safety: MyString
+  interior: MyString
+  driving: MyString
+
+two:
+  tags: MyString
+  description: MyString
+  introduction: MyString
+  link: 
+  edmundsSays: MyString
+  pros: MyString
+  cons: MyString
+  whatsNew: MyString
+  body: MyString
+  powertrain: MyString
+  safety: MyString
+  interior: MyString
+  driving: MyString

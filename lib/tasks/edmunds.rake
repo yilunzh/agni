@@ -51,7 +51,7 @@ namespace :data do
 		end
 	end
 
-	task :consumer_ratings => :environment do
+	task :consumer_ratings_test => :environment do
 		makes = Make.where(niceName: ["ferrari", "lamborghini", "porsche"])
 		makes.each do |make|
 			make.modelyears.each do |modelyear|
@@ -74,4 +74,32 @@ namespace :data do
 			end
 		end
 	end
+
+	task :editorial_review_test => :environment do
+		makes = Make.where(niceName: ["ferrari", "lamborghini", "porsche"])
+		makes.each do |make|
+			objects = []
+			make.modelyears.each do |modelyear|
+				puts "#{make.niceName} #{modelyear.niceName} #{modelyear.year}"
+				begin
+					response = RestClient.get "https://api.edmunds.com/api/editorial/v2/#{make.niceName}/#{modelyear.niceName}/#{modelyear.year}?api_key=#{ENV["edmunds_key"]}&fmt=json"
+					response = JSON.parse response
+				rescue => e
+					Rails.logger.error { "#{e.message} #{e.backtrace.join("\n")}" }
+					nil
+				end
+				if response != nil
+					objects << EditorialReview.new(tags: response["tags"], description: response["description"], 
+																				 introduction: response["introduction"], link: response["link"],
+																				 edmundsSays: response["edmundsSays"], pros: response["pros"],
+																				 cons: response["cons"], whatsNew: response["whatsNew"],
+																				 body: response["body"], powertrain: response["powertrain"],
+																				 safety: response["safety"], interior: response["interior"],
+																				 driving: response["driving"], modelyear_id: modelyear.id)
+				end
+			end	
+			EditorialReview.import objects, :validate => true
+		end
+	end
+
 end
