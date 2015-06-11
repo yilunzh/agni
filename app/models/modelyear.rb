@@ -1,4 +1,6 @@
 class Modelyear < ActiveRecord::Base
+	include PgSearch
+	multisearchable :against => [:name, :year, :make_id]
 
 	belongs_to :make
 	has_many :styles

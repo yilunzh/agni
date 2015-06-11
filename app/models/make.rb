@@ -2,6 +2,8 @@ require 'json'
 require 'rest_client'
 
 class Make < ActiveRecord::Base
+	include PgSearch
+	multisearchable :against => [:name, :edmunds_make_id]
 
 	has_many :modelyears
 	

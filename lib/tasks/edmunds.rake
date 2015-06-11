@@ -67,7 +67,9 @@ namespace :data do
 						nil
 					end
 					if response != nil
-						objects << ConsumerRating.new(averageRating: response["averageRating"], links: response["links"], reviews: response["reviews"], reviewsCount: response["reviewsCount"])
+						objects << ConsumerRating.new(averageRating: response["averageRating"], 
+																					links: response["links"], reviews: response["reviews"], 
+																					reviewsCount: response["reviewsCount"], style_id: style.id)
 					end
 				end
 				ConsumerRating.import objects, :validate => true
@@ -99,6 +101,32 @@ namespace :data do
 				end
 			end	
 			EditorialReview.import objects, :validate => true
+		end
+	end
+
+	task :media => :environment do
+		ratings = ConsumerRating.all
+		ratings.each do |rating|
+			style = rating.style
+			puts "#{style.name}"
+			objects = []
+			begin
+				response = RestClient.get "https://api.edmunds.com/api/media/v2/styles/#{style.edmunds_style_id}/photos?view=full&api_key=#{ENV["edmunds_key"]}&fmt=json"
+				response = JSON.parse response
+			rescue => e
+				Rails.logger.error { "#{e.message} #{e.backtrace.join("\n")}" }
+			end
+			if response != nil
+				photos = response["photos"]
+				photos.each do |photo|
+					medium = Medium.new(title: photo["title"], category: photo["category"], tags: photo["tags"],
+														provider: photo["provider"], sources: photo["sources"], color: photo["color"],
+														submodels: photo["submodels"], shot_type_abbr: photo["shotTypeAbbreviation"], 
+														style_id: style.id)
+					objects << medium
+				end
+			end 
+			Medium.import objects, :validate => true
 		end
 	end
 
