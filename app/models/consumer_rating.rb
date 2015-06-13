@@ -5,6 +5,6 @@ class ConsumerRating < ActiveRecord::Base
 	belongs_to :style
 
 	validates :averagerating, presence: true
-	validates :reviewsCount, presence: true
+	validates :reviewscount, presence: true
 
 end
