@@ -79,9 +79,9 @@ namespace :data do
 						nil
 					end
 					if response != nil
-						objects << ConsumerRating.new(averageRating: response["averageRating"], 
+						objects << ConsumerRating.new(averagerating: response["averageRating"], 
 																					links: response["links"], reviews: response["reviews"], 
-																					reviewsCount: response["reviewsCount"], style_id: style.id)
+																					reviewscount: response["reviewsCount"], style_id: style.id)
 					end
 				end
 				ConsumerRating.import objects, :validate => true
