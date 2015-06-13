@@ -1,13 +1,20 @@
 namespace :data do
 	desc "get makes"
 	task :makes => :environment do
-		response = RestClient.get "http://api.edmunds.com/api/vehicle/v2/makes?fmt=json&api_key=#{ENV["edmunds_key"]}"
-		response = JSON.parse response
+		begin
+			response = RestClient.get "http://api.edmunds.com/api/vehicle/v2/makes?fmt=json&api_key=#{ENV["edmunds_key"]}"
+			response = JSON.parse response
+		rescue => e
+			Rails.logger.error("#{e.message} #{e.backtrace.join("\n")}")
+			puts e.inspect
+		end	
 		objects = []
-		response["makes"].each do |make|
-			objects << Make.new(edmunds_make_id: make["id"], name: make["name"], niceName: make["niceName"])
+		if response != nil
+			response["makes"].each do |make|
+				objects << Make.new(edmunds_make_id: make["id"], name: make["name"], niceName: make["niceName"])
+			end
+			Make.import objects, :validate => true
 		end
-		Make.import objects, :validate => true
 	end
 
 	desc "get model and year"
@@ -15,8 +22,13 @@ namespace :data do
 		makes = Make.all
 		makes.each do |make|
 			puts "#{make.niceName}"
-			response = RestClient.get "https://api.edmunds.com/api/vehicle/v2/#{make.niceName}/models?fmt=json&api_key=#{ENV["edmunds_key"]}"
-			response = JSON.parse response
+			begin
+				response = RestClient.get "https://api.edmunds.com/api/vehicle/v2/#{make.niceName}/models?fmt=json&api_key=#{ENV["edmunds_key"]}"
+				response = JSON.parse response
+			rescue => e
+				Rails.logger.error("#{e.message} #{e.backtrace.join("\n")}")
+				puts e.inspect
+			end
 			objects = []
 			response["models"].each do |model|
 				model["years"].each do |year|
