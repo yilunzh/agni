@@ -1,10 +1,12 @@
 class SearchController < ApplicationController
 	def search
+		@results= []
+		@bodytypes = [["Sedan", "sedan"], ["Coupe", "coupe"], ["Hatchback", "hatchback"], ["Crossover", "crossover"],
+									["SUV", "suv"], ["Minivan", "minivan"], ["Wagon", "wagon"]]
+
 		if params['/search'].nil?
-			@results= []
 			@styles = []
 		else
-			@results = []
 			@styles = Style.joins(:modelyear).where("submodel -> 'body' ilike '%#{params['/search'][:bodytype]}%'  
 																							 and modelyears.year >= #{params['/search'][:minyear].to_i}
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
