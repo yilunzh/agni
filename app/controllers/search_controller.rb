@@ -19,7 +19,6 @@ class SearchController < ApplicationController
 					modelyear = style.modelyear
 					make = modelyear.make
 					media = style.media.where("media.shot_type_abbr = 'FQ' and media.category = 'EXTERIOR'").first
-					binding.pry
 					photo = ""
 					if media
 						media["sources"].each do |source|
