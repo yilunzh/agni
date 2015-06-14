@@ -4,6 +4,7 @@ class Style < ActiveRecord::Base
 	belongs_to :modelyear
 	has_many :consumer_ratings
 	has_many :media
+	has_many :prices
 
 	multisearchable :against => [:edmunds_style_id, :name, :submodel, :trim, :modelyear_id]
 	pg_search_scope :search, :against => [:submodel, :name, :trim],

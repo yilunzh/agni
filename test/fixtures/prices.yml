@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  base_msrp: 1
+  base_invoide: 1
+  delivery_charges: 1
+  tmv: 1
+  used_tmv_retail: 1
+  used_private_party: 1
+  used_trade_in: 1
+  estimated_tmv: 1
+  tmv_recommended_rating: MyString
+
+two:
+  base_msrp: 1
+  base_invoide: 1
+  delivery_charges: 1
+  tmv: 1
+  used_tmv_retail: 1
+  used_private_party: 1
+  used_trade_in: 1
+  estimated_tmv: 1
+  tmv_recommended_rating: MyString

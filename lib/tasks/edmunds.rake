@@ -89,8 +89,61 @@ namespace :data do
 		end
 	end
 
+	task :consumer_ratings => :environment do
+		makes = Make.all
+		makes.each do |make|
+			make.modelyears.each do |modelyear|
+				objects = []
+				modelyear.styles.each do |style|
+					errors = []
+					puts "#{make.niceName} #{modelyear.niceName} #{modelyear.year} #{style.name}"
+					begin
+						response = RestClient.get "https://api.edmunds.com/api/vehiclereviews/v2/styles/#{style.edmunds_style_id}?fmt=json&api_key=#{ENV["edmunds_key"]}"
+						response = JSON.parse response
+					rescue => e
+						Rails.logger.error { "#{e.message} #{e.backtrace.join("\n")}" }
+						nil
+					end
+					if response != nil
+						objects << ConsumerRating.new(averagerating: response["averageRating"], 
+																					links: response["links"], reviews: response["reviews"], 
+																					reviewscount: response["reviewsCount"], style_id: style.id)
+					end
+				end
+				ConsumerRating.import objects, :validate => true
+			end
+		end
+	end
+
 	task :editorial_review_test => :environment do
 		makes = Make.where(niceName: ["ferrari", "lamborghini", "porsche"])
+		makes.each do |make|
+			objects = []
+			make.modelyears.each do |modelyear|
+				puts "#{make.niceName} #{modelyear.niceName} #{modelyear.year}"
+				begin
+					response = RestClient.get "https://api.edmunds.com/api/editorial/v2/#{make.niceName}/#{modelyear.niceName}/#{modelyear.year}?api_key=#{ENV["edmunds_key"]}&fmt=json"
+					response = JSON.parse response
+				rescue => e
+					Rails.logger.error { "#{e.message} #{e.backtrace.join("\n")}" }
+					nil
+				end
+				if response != nil
+					objects << EditorialReview.new(tags: response["tags"], description: response["description"], 
+																				 introduction: response["introduction"], link: response["link"],
+																				 edmundsSays: response["edmundsSays"], pros: response["pros"],
+																				 cons: response["cons"], whatsNew: response["whatsNew"],
+																				 body: response["body"], powertrain: response["powertrain"],
+																				 safety: response["safety"], interior: response["interior"],
+																				 driving: response["driving"], modelyear_id: modelyear.id)
+				end
+			end	
+			EditorialReview.import objects, :validate => true
+		end
+	end
+
+	task :editorial_review => :environment do
+		makes = Make.all
 		makes.each do |make|
 			objects = []
 			make.modelyears.each do |modelyear|
@@ -139,6 +192,41 @@ namespace :data do
 				end
 			end 
 			Medium.import objects, :validate => true
+		end
+	end
+
+	task :prices => :environment do
+		ratings = ConsumerRating.all
+		objects = []
+		ratings.each do |rating|
+			style = rating.style
+			puts "#{style.name}"
+			begin
+				response = RestClient.get "https://api.edmunds.com/v1/api/tmv/tmvservice/calculateusedtmv?styleid=#{style.edmunds_style_id}&condition=clean&mileage=50000&zip=85257&fmt=json&api_key=#{ENV["edmunds_key"]}"
+				response = JSON.parse response
+			rescue => e
+				Rails.logger.error { "#{e.message} #{e.backtrace.join("\n")}" }
+			end
+
+			if response != nil
+				national_prices = response["tmv"]["nationalBasePrice"]
+				national_prices.each do |k, v|
+					if not v.nil?
+						price = Price.new(base_msrp: national_prices["base_msrp"], base_invoice: national_prices["baseInvoice"],
+															delivery_charges: national_prices["deliveryCharges"], tmv: national_prices["tmv"],
+															used_tmv_retail: national_prices["usedTmvRetail"], used_private_party: national_prices["usedPrivateParty"],
+															used_trade_in: national_prices["usedTradeIn"], estimate_tmv: national_prices["estimateTmv"],
+															tmv_recommended_rating: national_prices["tmvRecommendedRating"], style_id: style.id)
+
+						objects << price
+						break
+					end	
+				end
+			end 
+			if objects.count > 50
+				Price.import objects, :validate => true
+				objects = []
+			end
 		end
 	end
 

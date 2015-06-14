@@ -11,8 +11,10 @@ class SearchController < ApplicationController
 			@styles = Style.joins(:modelyear).where("submodel -> 'body' ilike '%#{params['/search'][:bodytype]}%'  
 																							 and modelyears.year >= #{params['/search'][:minyear].to_i}
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
+										 .joins(:prices).where("prices.used_tmv_retail <= #{params['/search'][:maxprice].to_i}")
 										 .joins(:consumer_ratings)
 										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(4)
+						
 			unless @styles.empty? 
 				@styles.each do |style|
 					result = {}
@@ -20,6 +22,7 @@ class SearchController < ApplicationController
 					make = modelyear.make
 					media = style.media.where("media.shot_type_abbr = 'FQ' and media.category = 'EXTERIOR'").first
 					photo = ""
+					price = ActionController::Base.helpers.number_to_currency(style.prices.first.used_tmv_retail, precision: 0)
 					if media
 						media["sources"].each do |source|
 							if source["size"]["width"] == 300
@@ -32,7 +35,8 @@ class SearchController < ApplicationController
 						reviews_count = style.consumer_ratings[0]["reviewscount"]
 					end
 
-					result = { make: make, modelyear: modelyear, style: style, rating: rating, reviews_count: reviews_count, photo: photo}
+					result = { make: make, modelyear: modelyear, style: style, price: price, 
+										 rating: rating, reviews_count: reviews_count, photo: photo }
 					@results << result
 				end
 			end
@@ -44,5 +48,6 @@ class SearchController < ApplicationController
 	def clean_search_params
 		params["/search"][:minyear] = 1990 if params['/search'][:minyear].empty?
 		params["/search"][:maxyear] = Time.now.year if params['/search'][:maxyear].empty?
+		params["/search"][:maxprice] = 5000000 if params['/search'][:maxprice].empty?
 	end
 end

@@ -16,6 +16,11 @@
 		<%= f.text_field :maxyear, class: "form-control", placeholder: "year (i.e. 2015)" %>
 	</div>
 
+	<div class="form-group">
+		<%= f.label "less than" %>
+		<%= f.text_field :maxprice, class: "form-control", placeholder: "price (i.e. 30,000)" %>
+	</div>
+
 	<%= submit_tag "search", name: nil, class: "btn btn-primary", id: "search_button", data: { disable_with: 'Searching...'} %> 
 <% end %>
 
@@ -26,6 +31,9 @@
 		</div>
 		<div class="desc">
 			<%= "#{result[:modelyear]['year']} #{result[:make]["name"]} #{result[:modelyear]['name']} #{result[:style]['name']}" %>
+		</div>
+		<div class="price">
+			<strong><%= result[:price] %></strong>
 		</div>
 		<div class="rating">
 			<%= "Rating: #{result[:rating]}" %><br/>
