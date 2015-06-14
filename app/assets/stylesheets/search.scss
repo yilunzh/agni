@@ -2,8 +2,12 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+#search {
+	margin: 20px 15px 20px 15px;
+}
+
 div.vehicle {
-	margin: 10px;
+	margin: 0px 15px 0px 15px;
 	border: 1px solid gray;
 	border-radius: 7px;
 	height: auto;

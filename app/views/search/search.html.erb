@@ -1,23 +1,22 @@
-<h1></h1>
+<h1 id="search">What type of car are you looking for?</h1>
 
-<%= form_for search_path, method: :get, html: { class: "form-inline" } do |f| %>
+<%= form_for search_path, method: :get, html: { class: "form-inline", id: "search" } do |f| %>
 	<div class="form-group">
-		<%= f.label :bodytype %>
-		<%= f.select(:bodytype, @bodytypes) %>
+		<%= f.label "I want a" %>
+		<%= f.select(:bodytype, @bodytypes, {}, { class: "form-control" }) %>
 	</div>
 
 	<div class="form-group">
-		<%= f.label "min year" %>
-		<%= f.text_field :minyear %>
+		<%= f.label "between" %>
+		<%= f.text_field :minyear, class: "form-control", placeholder: "year (i.e. 2010)" %>
 	</div>
 
 	<div class="form-group">
-		<%= f.label "max year" %>
-		<%= f.text_field :maxyear %>
+		<%= f.label "and" %>
+		<%= f.text_field :maxyear, class: "form-control", placeholder: "year (i.e. 2015)" %>
 	</div>
 
 	<%= submit_tag "search", name: nil, class: "btn btn-primary", id: "search_button", data: { disable_with: 'Searching...'} %> 
-
 <% end %>
 
 <% @results.each do |result| %>
