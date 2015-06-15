@@ -8,13 +8,13 @@ class SearchController < ApplicationController
 			@styles = []
 		else
 			clean_search_params
-			@styles = Style.joins(:modelyear).where("submodel -> 'body' ilike '%#{params['/search'][:bodytype]}%'  
-																							 and modelyears.year >= #{params['/search'][:minyear].to_i}
+			@styles = Style.where("submodel -> 'body' ilike '%#{params['/search'][:bodytype]}%'")
+										 .joins(:modelyear).where("modelyears.year >= #{params['/search'][:minyear].to_i}
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
 										 .joins(:prices).where("prices.used_tmv_retail <= #{params['/search'][:maxprice].to_i}")
 										 .joins(:consumer_ratings)
 										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(4)
-						
+			
 			unless @styles.empty? 
 				@styles.each do |style|
 					result = {}
