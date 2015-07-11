@@ -67,7 +67,7 @@ namespace :data do
 	end
 
 	task :consumer_ratings_test => :environment do
-		makes = Make.where(niceName: ["ferrari", "lamborghini", "porsche"])
+		makes = Make.where(niceName: ["honda", "toyota", "nissan", "mazda", "audi", "bmw", "mercedes-benz", "volkswagen", "ford", "chevrolet"])
 		makes.each do |make|
 			make.modelyears.each do |modelyear|
 				objects = []
@@ -119,7 +119,7 @@ namespace :data do
 	end
 
 	task :editorial_review_test => :environment do
-		makes = Make.where(niceName: ["ferrari", "lamborghini", "porsche"])
+		makes = Make.where(niceName: ["honda", "toyota", "nissan", "mazda", "audi", "bmw", "mercedes-benz", "volkswagen", "ford", "chevrolet"])
 		makes.each do |make|
 			objects = []
 			make.modelyears.each do |modelyear|
