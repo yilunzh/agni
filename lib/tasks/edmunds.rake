@@ -11,9 +11,12 @@ namespace :data do
 		objects = []
 		if response != nil
 			response["makes"].each do |make|
+				make["name"] = "edited name"
 				objects << Make.new(edmunds_make_id: make["id"], name: make["name"], niceName: make["niceName"])
+				binding.pry
+				break
 			end
-			Make.import objects, :validate => true
+			Make.import objects, :on_duplicate_key_update => [:name], :validate => true
 		end
 	end
 
