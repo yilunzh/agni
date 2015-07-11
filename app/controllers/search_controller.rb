@@ -12,7 +12,7 @@ class SearchController < ApplicationController
 										 .joins(:modelyear).where("modelyears.year >= #{params['/search'][:minyear].to_i}
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
 										 .joins(:prices).where("prices.used_tmv_retail <= #{params['/search'][:maxprice].to_i}")
-										 .joins(:consumer_ratings).where("consumer_ratings.reviewscount >= 10")
+										 .joins(:consumer_ratings).where("consumer_ratings.reviewscount >= 1")
 										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(8)
 			
 			unless @styles.empty? 
@@ -20,24 +20,27 @@ class SearchController < ApplicationController
 					result = {}
 					modelyear = style.modelyear
 					make = modelyear.make
-					media = style.media.where("media.shot_type_abbr = 'FQ' and media.category = 'EXTERIOR'").first
-					photo = ""
-					price = ActionController::Base.helpers.number_to_currency(style.prices.first.used_tmv_retail, precision: 0)
-					if media
-						media["sources"].each do |source|
-							if source["size"]["width"] == 300
-								photo = "http://media.ed.edmunds-media.com" + source["link"]["href"]
+					if not @results.any? { |result| result[:modelyear].niceName == modelyear.niceName and result[:modelyear].year == modelyear.year }
+						media = style.media.where("media.shot_type_abbr = 'FQ' and media.category = 'EXTERIOR'").first
+						photo = ""
+						price = ActionController::Base.helpers.number_to_currency(style.prices.first.used_tmv_retail, precision: 0)
+						if media
+							media["sources"].each do |source|
+								if source["size"]["width"] == 300
+									photo = "http://media.ed.edmunds-media.com" + source["link"]["href"]
+								end
 							end
 						end
-					end
-					if not style.consumer_ratings.empty?
-						rating = style.consumer_ratings[0]["averagerating"]
-						reviews_count = style.consumer_ratings[0]["reviewscount"]
-					end
+						if not style.consumer_ratings.empty?
+							rating = style.consumer_ratings[0]["averagerating"]
+							reviews_count = style.consumer_ratings[0]["reviewscount"]
+						end
 
-					result = { make: make, modelyear: modelyear, style: style, price: price, 
-										 rating: rating, reviews_count: reviews_count, photo: photo }
-					@results << result
+						result = { make: make, modelyear: modelyear, style: style, price: price, 
+											 rating: rating, reviews_count: reviews_count, photo: photo }
+						@results << result
+						binding.pry
+					end
 				end
 			end
 		end
