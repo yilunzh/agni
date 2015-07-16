@@ -48,7 +48,6 @@ class SearchController < ApplicationController
 											 rating: rating, reviews_count: reviews_count, photo: photo }
 						@results << result
 					end
-					binding.pry
 				end
 			end
 		end
