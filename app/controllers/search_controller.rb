@@ -21,7 +21,7 @@ class SearchController < ApplicationController
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
 										 .joins(:prices).where("prices.used_tmv_retail <= #{params['/search'][:maxprice].to_i}")
 										 .joins(:consumer_ratings).where("consumer_ratings.reviewscount >= 10")
-										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(8)
+										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(12)
 			
 			unless @styles.empty? 
 				@styles.each do |style|

@@ -25,10 +25,6 @@
 	<%= submit_tag "search", name: nil, class: "btn btn-primary", id: "search_button", data: { disable_with: 'Searching...'} %> 
 <% end %>
 
-<% if not @results.empty? %>
-	<h1>The most beloved cars that fit these criteria are:</h1>
-<% end %>
-
 <% @results.each do |result| %>
 	<div class="vehicle">
 		<div class="img">
