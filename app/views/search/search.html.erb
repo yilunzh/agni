@@ -3,25 +3,30 @@
 <%= form_for search_path, method: :get, html: { class: "form-inline", id: "search" } do |f| %>
 	<div class="form-group">
 		<%= f.label "I want a" %>
-		<%= f.select(:bodytype, @bodytypes, {}, { class: "form-control" }) %>
+		<%= f.text_field :description, value: @search[:description], class: "form-control", placeholder: "desc (i.e. sporty)", id: "search-form" %>
+		<%= f.select :bodytype, options_for_select(@bodytypes, @search[:bodytype]), { class: "form-control" } %>
 	</div>
 
 	<div class="form-group">
 		<%= f.label "between" %>
-		<%= f.text_field :minyear, class: "form-control", placeholder: "year (i.e. 2010)" %>
+		<%= f.text_field :minyear, value: @search[:minyear], class: "form-control", placeholder: "year (i.e. 2010)", id: "search-form" %>
 	</div>
 
 	<div class="form-group">
 		<%= f.label "and" %>
-		<%= f.text_field :maxyear, class: "form-control", placeholder: "year (i.e. 2015)" %>
+		<%= f.text_field :maxyear, value: @search[:maxyear], class: "form-control", placeholder: "year (i.e. 2015)", id: "search-form" %>
 	</div>
 
 	<div class="form-group">
 		<%= f.label "for less than" %>
-		<%= f.text_field :maxprice, class: "form-control", placeholder: "price (i.e. 30,000)" %>
+		<%= f.text_field :maxprice, value: @search[:maxprice], class: "form-control", placeholder: "price (i.e. 30,000)", id: "search-form" %>
 	</div>
 
 	<%= submit_tag "search", name: nil, class: "btn btn-primary", id: "search_button", data: { disable_with: 'Searching...'} %> 
+<% end %>
+
+<% if not @results.empty? %>
+	<h1>The most beloved cars that fit these criteria are:</h1>
 <% end %>
 
 <% @results.each do |result| %>

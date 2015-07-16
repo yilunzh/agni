@@ -1,13 +1,21 @@
 class SearchController < ApplicationController
 	def search
 		@results= []
-		@bodytypes = [["Sedan", "sedan"], ["Coupe", "coupe"], ["Hatchback", "hatchback"], ["Crossover", "crossover"],
-									["SUV", "suv"], ["Minivan", "minivan"], ["Wagon", "wagon"]]
+		@bodytypes = ["sedan", "coupe", "suv"]
+		@search = {}
+		# @bodytypes = [["Sedan", "sedan"], ["Coupe", "coupe"], ["Hatchback", "hatchback"], ["Crossover", "crossover"],
+		# 							["SUV", "suv"], ["Minivan", "minivan"], ["Wagon", "wagon"]]
 
 		if params['/search'].nil?
 			@styles = []
 		else
 			clean_search_params
+			@search = { description: params['/search'][:description],
+									bodytype: params['/search'][:bodytype], 
+									minyear: params["/search"][:minyear], 
+									maxyear: params["/search"][:maxyear],
+									maxprice: params["/search"][:maxprice] }
+			
 			@styles = Style.where("submodel -> 'body' ilike '%#{params['/search'][:bodytype]}%'")
 										 .joins(:modelyear).where("modelyears.year >= #{params['/search'][:minyear].to_i}
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
@@ -39,7 +47,6 @@ class SearchController < ApplicationController
 						result = { make: make, modelyear: modelyear, style: style, price: price, 
 											 rating: rating, reviews_count: reviews_count, photo: photo }
 						@results << result
-						binding.pry
 					end
 				end
 			end
@@ -51,6 +58,6 @@ class SearchController < ApplicationController
 	def clean_search_params
 		params["/search"][:minyear] = 1990 if params['/search'][:minyear].empty?
 		params["/search"][:maxyear] = Time.now.year if params['/search'][:maxyear].empty?
-		params["/search"][:maxprice] = 5000000 if params['/search'][:maxprice].empty?
+		params["/search"][:maxprice] = 100000 if params['/search'][:maxprice].empty?
 	end
 end
