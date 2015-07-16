@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
 	def search
 		@results= []
-		@bodytypes = ["sedan", "coupe", "suv"]
+		@bodytypes = ["sedan", "coupe", "suv", "hatchback", "crossover", "suv", "minivan", "wagon"]
 		@search = {}
 		# @bodytypes = [["Sedan", "sedan"], ["Coupe", "coupe"], ["Hatchback", "hatchback"], ["Crossover", "crossover"],
 		# 							["SUV", "suv"], ["Minivan", "minivan"], ["Wagon", "wagon"]]
@@ -21,7 +21,7 @@ class SearchController < ApplicationController
 																							 and modelyears.year <= #{params['/search'][:maxyear].to_i}")
 										 .joins(:prices).where("prices.used_tmv_retail <= #{params['/search'][:maxprice].to_i}")
 										 .joins(:consumer_ratings).where("consumer_ratings.reviewscount >= 10")
-										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(12)
+										 .order("consumer_ratings.averagerating DESC, consumer_ratings.reviewscount DESC").limit(8)
 			
 			unless @styles.empty? 
 				@styles.each do |style|
